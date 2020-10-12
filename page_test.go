@@ -686,7 +686,7 @@ func (t T) PageScroll() {
 }
 
 func (t T) PageConsoleLog() {
-	p := t.page.MustNavigate("").MustWaitLoad()
+	p := t.newPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
 	p.MustEval(`console.log(1, {b: ['test']})`)
@@ -709,6 +709,9 @@ func (t T) PageOthers() {
 }
 
 func (t T) Fonts() {
+	t.cancelTimeout()
+	t.PanicAfter(time.Minute)
+
 	p := t.page.MustNavigate(t.srcFile("fixtures/fonts.html")).MustWaitLoad()
 
 	p.MustPDF("tmp", "fonts.pdf") // download the file from Github Actions Artifacts
